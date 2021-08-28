@@ -8,4 +8,4 @@ Run "npm install" and "npm start" to run project on EXPO.
 
 # Wireframe
 
-Could be found in /docs/wireframe.png
+Could be found in /docs
