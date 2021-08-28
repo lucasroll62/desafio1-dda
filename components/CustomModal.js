@@ -1,10 +1,34 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, {useEffect, useState} from 'react'
 
-import React from 'react'
 import colors from '../constants/colors';
 
 const CustomModal = (props) => {
-  const { modalVisible, handleConfirm, children, title, handleCancel, textOk, textCancel } = props;
+  const { modalVisible, handleConfirm, children, title, handleCancel, textOk, textCancel, handleClose } = props;
+
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardOpen(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardOpen(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  });
+
+  const handleCancelKeyboard = () => {
+    if (keyboardOpen) {
+      Keyboard.dismiss();
+    } else {
+      handleClose();
+    }
+  } 
 
   const modalHeader = (
     <View style={styles.modalHeader}>
@@ -40,13 +64,14 @@ const CustomModal = (props) => {
 
   const modal = (
     <Modal
+      animationType='fade'
       transparent={true}
       visible={modalVisible}>
-      <View style={styles.modal}>
+      <Pressable style={styles.modal} onPressOut={handleCancelKeyboard}>
         <View>
           {modalContainer}
         </View>
-      </View>
+      </Pressable>
     </Modal>
   )
 
@@ -72,7 +97,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     padding: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: 'nunito-bold'
   },
   divider: {
     width: "100%",
@@ -94,7 +120,8 @@ const styles = StyleSheet.create({
   },
   actionText: {
     color: "#fff",
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'nunito-regular'
   }
 });
 

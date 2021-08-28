@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 30,
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
+    fontFamily: 'nunito-bold'
   }
 });
 
