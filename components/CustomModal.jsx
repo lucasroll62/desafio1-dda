@@ -1,18 +1,28 @@
-import { Keyboard, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, {useEffect, useState} from 'react'
+import {
+  Keyboard,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import colors from '../constants/colors';
 
 const CustomModal = (props) => {
-  const { modalVisible, handleConfirm, children, title, handleCancel, textOk, textCancel, handleClose } = props;
+  const {
+    modalVisible, handleConfirm, children, title, handleCancel, textOk, textCancel, handleClose,
+  } = props;
 
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardOpen(true);
     });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardOpen(false);
     });
 
@@ -28,31 +38,36 @@ const CustomModal = (props) => {
     } else {
       handleClose();
     }
-  } 
+  };
 
   const modalHeader = (
     <View style={styles.modalHeader}>
       <Text style={styles.title}>{title}</Text>
-      <View style={styles.divider}></View>
+      <View style={styles.divider} />
     </View>
-  )
+  );
 
   const modalFooter = (
     <View style={styles.modalFooter}>
-      <View style={styles.divider}></View>
-      <View style={{ flexDirection: "row-reverse", margin: 10 }}>
-        {textCancel && <TouchableOpacity style={{ ...styles.actions, backgroundColor: colors.cancel }}
-          onPress={handleCancel}>
+      <View style={styles.divider} />
+      <View style={{ flexDirection: 'row-reverse', margin: 10 }}>
+        {textCancel && (
+        <TouchableOpacity
+          style={{ ...styles.actions, backgroundColor: colors.cancel }}
+          onPress={handleCancel}
+        >
           <Text style={styles.actionText}>{textCancel}</Text>
-        </TouchableOpacity>}
+        </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={handleConfirm}
-          style={{ ...styles.actions, backgroundColor: colors.accept }}>
+          style={{ ...styles.actions, backgroundColor: colors.accept }}
+        >
           <Text style={styles.actionText}>{textOk}</Text>
         </TouchableOpacity>
       </View>
     </View>
-  )
+  );
 
   const modalContainer = (
     <View style={styles.modalContainer}>
@@ -60,55 +75,56 @@ const CustomModal = (props) => {
       {children}
       {modalFooter}
     </View>
-  )
+  );
 
   const modal = (
     <Modal
-      animationType='fade'
-      transparent={true}
-      visible={modalVisible}>
+      animationType="fade"
+      transparent
+      visible={modalVisible}
+    >
       <Pressable style={styles.modal} onPressOut={handleCancelKeyboard}>
         <View>
           {modalContainer}
         </View>
       </Pressable>
     </Modal>
-  )
+  );
 
-  return (modal)
-}
+  return (modal);
+};
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: "#00000099",
+    backgroundColor: '#00000099',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalContainer: {
-    backgroundColor: "#f9fafb",
-    width: "80%",
-    borderRadius: 5
+    backgroundColor: '#f9fafb',
+    width: '80%',
+    borderRadius: 5,
   },
   modalHeader: {
     backgroundColor: colors.primary,
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 20,
     padding: 15,
-    color: "#fff",
-    fontFamily: 'nunito-bold'
+    color: '#fff',
+    fontFamily: 'nunito-bold',
   },
   divider: {
-    width: "100%",
+    width: '100%',
     height: 1,
-    backgroundColor: "lightgray"
+    backgroundColor: 'lightgray',
   },
   modalBody: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingVertical: 20,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   modalFooter: {
   },
@@ -116,13 +132,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 10,
     paddingVertical: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   actionText: {
-    color: "#fff",
+    color: '#fff',
     fontWeight: 'bold',
-    fontFamily: 'nunito-regular'
-  }
+    fontFamily: 'nunito-regular',
+  },
 });
 
 export default CustomModal;

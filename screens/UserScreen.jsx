@@ -7,18 +7,17 @@ import {
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
-} from 'react-native'
+  View,
+} from 'react-native';
 import React, { useState } from 'react';
 
-import AddButton from '../components/AddButton.js'
+import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
-import Input from '../components/Input.js';
+import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
 const UserScreen = (props) => {
-
   const { itemList, setItemList } = props;
 
   const [inputName, setInputName] = useState('');
@@ -32,17 +31,17 @@ const UserScreen = (props) => {
   const [viewModalVisible, setViewModalVisible] = useState(false);
 
   const handleChangeName = (text) => {
-    setInputName(text)
+    setInputName(text);
     setInputError('');
   };
 
   const handleChangeLastName = (text) => {
-    setInputLastName(text)
+    setInputLastName(text);
     setInputError('');
   };
 
   const handleChangeAge = (text) => {
-    setInputAge(text.replace(/[^0-9]/g, ''))
+    setInputAge(text.replace(/[^0-9]/g, ''));
     setInputError('');
   };
 
@@ -65,7 +64,7 @@ const UserScreen = (props) => {
         id: Math.random().toString(),
         name: inputName,
         lastName: inputLastName,
-        age: inputAge
+        age: inputAge,
       },
     ]);
     setInputName('');
@@ -73,50 +72,52 @@ const UserScreen = (props) => {
     setInputAge('');
     setInputError('');
     setAddModalVisible(false);
-  }
+  };
 
   const handleConfirmDelete = () => {
-    const id = itemSelected.id;
-    setItemList(itemList.filter(item => item.id !== id));
+    const { id } = itemSelected;
+    setItemList(itemList.filter((item) => item.id !== id));
     setDeleteModalVisible(false);
     setItemSelected({});
-  }
+  };
 
-  const handleDeleteModal = id => {
-    setItemSelected(itemList.find(item => item.id === id));
+  const handleDeleteModal = (id) => {
+    setItemSelected(itemList.find((item) => item.id === id));
     setDeleteModalVisible(true);
-  }
+  };
 
-  const handleViewModal = id => {
-    setItemSelected(itemList.find(item => item.id === id));
+  const handleViewModal = (id) => {
+    setItemSelected(itemList.find((item) => item.id === id));
     setViewModalVisible(true);
-  }
+  };
 
   const handleCloseViewModal = () => {
     setViewModalVisible(false);
     setItemSelected(false);
-  }
+  };
   return (
     <View style={styles.screen}>
       <FlatList
         data={itemList}
-        renderItem={data => {
-          return (
-            <View style={[styles.item, styles.shadow]} >
-              <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
-                <View>
-                  <Text>{data.item.name} {data.item.lastName}</Text>
-                </View>
-              </TouchableOpacity>
-              <Button
-                title="X"
-                color="#AAAAAA"
-                onPress={() => handleDeleteModal(data.item.id)}
-              />
-            </View>
-          );
-        }}
-        keyExtractor={item => item.id}
+        renderItem={(data) => (
+          <View style={[styles.item, styles.shadow]}>
+            <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+              <View>
+                <Text>
+                  {data.item.name}
+                  {' '}
+                  {data.item.lastName}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <Button
+              title="X"
+              color="#AAAAAA"
+              onPress={() => handleDeleteModal(data.item.id)}
+            />
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
       />
       <DeleteModal
         modalVisible={deleteModalVisible}
@@ -124,13 +125,17 @@ const UserScreen = (props) => {
         handleConfirm={handleConfirmDelete}
         handleCancel={() => setDeleteModalVisible(false)}
         handleClose={() => setDeleteModalVisible(false)}
-        title={'Eliminar usuario'}
-        textOk={'Si'}
-        textCancel={'No'}
+        title="Eliminar usuario"
+        textOk="Si"
+        textCancel="No"
       >
         <View style={{ margin: 30 }}>
           <Text style={styles.modalMessage}>¿Está seguro que desea eliminar al usuario?</Text>
-          <Text style={styles.modalUser}>{itemSelected.name} {itemSelected.lastName}</Text>
+          <Text style={styles.modalUser}>
+            {itemSelected.name}
+            {' '}
+            {itemSelected.lastName}
+          </Text>
         </View>
       </DeleteModal>
       <AddModal
@@ -139,24 +144,24 @@ const UserScreen = (props) => {
         handleConfirm={handleAddItem}
         handleCancel={() => setAddModalVisible(false)}
         handleClose={() => setAddModalVisible(false)}
-        title={'Agregar usuario'}
-        textOk={'Si'}
-        textCancel={'No'}
+        title="Agregar usuario"
+        textOk="Si"
+        textCancel="No"
       >
         <View style={{ margin: 30 }}>
 
           <View style={styles.inputContainer}>
             <Input
-              autoCapitalize={'words'}
+              autoCapitalize="words"
               placeholder="Nombre"
               style={styles.input}
               onChangeText={handleChangeName}
               value={inputName}
               autoCorrect={false}
-              autoFocus={true}
+              autoFocus
             />
             <Input
-              autoCapitalize={'words'}
+              autoCapitalize="words"
               placeholder="Apellido"
               style={styles.input}
               onChangeText={handleChangeLastName}
@@ -167,7 +172,7 @@ const UserScreen = (props) => {
               placeholder="Edad"
               style={styles.input}
               onChangeText={handleChangeAge}
-              keyboardType='numeric'
+              keyboardType="numeric"
               value={inputAge}
               maxLength={2}
             />
@@ -181,8 +186,8 @@ const UserScreen = (props) => {
         itemSelected={itemSelected}
         handleConfirm={handleCloseViewModal}
         handleClose={handleCloseViewModal}
-        title={'Ver usuario'}
-        textOk={'Cerrar'}
+        title="Ver usuario"
+        textOk="Cerrar"
       >
         <View style={{ margin: 30 }}>
           <View style={styles.viewContainer}>
@@ -196,7 +201,7 @@ const UserScreen = (props) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.viewDivider}></View>
+            <View style={styles.viewDivider} />
             <View style={styles.viewRow}>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewType}>Apellido: </Text>
@@ -207,7 +212,7 @@ const UserScreen = (props) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.viewDivider}></View>
+            <View style={styles.viewDivider} />
             <View style={styles.viewRow}>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewType}>Edad: </Text>
@@ -222,9 +227,9 @@ const UserScreen = (props) => {
         </View>
       </ViewModal>
       <AddButton handleOnPress={() => setAddModalVisible(true)} />
-    </View >
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -265,25 +270,25 @@ const styles = StyleSheet.create({
   viewRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   viewItemContainer: {
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   viewItem: {
     fontWeight: 'bold',
-    fontFamily: 'nunito-bold'
+    fontFamily: 'nunito-bold',
   },
   viewDivider: {
-    width: "100%",
+    width: '100%',
     height: 1,
-    backgroundColor: "lightgray",
-    marginVertical: 10
+    backgroundColor: 'lightgray',
+    marginVertical: 10,
   },
   modalUser: {
     marginTop: 20,
     fontWeight: 'bold',
-    fontFamily: 'nunito-bold'
+    fontFamily: 'nunito-bold',
   },
   container: {
     flex: 1,

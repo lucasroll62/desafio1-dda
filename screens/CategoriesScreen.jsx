@@ -5,18 +5,17 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
+  View,
+} from 'react-native';
 import React, { useState } from 'react';
 
-import AddButton from '../components/AddButton.js'
+import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
-import Input from '../components/Input.js';
+import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
 const UserScreen = (props) => {
-
   const { categoriesList, setCategoriesList, excercisesList } = props;
 
   const [inputName, setInputName] = useState('');
@@ -28,7 +27,7 @@ const UserScreen = (props) => {
   const [viewModalVisible, setViewModalVisible] = useState(false);
 
   const handleChangeName = (text) => {
-    setInputName(text)
+    setInputName(text);
     setInputError('');
   };
 
@@ -48,54 +47,56 @@ const UserScreen = (props) => {
     setInputName('');
     setInputError('');
     setAddModalVisible(false);
-  }
+  };
 
   const handleConfirmDelete = () => {
-    const id = categorySelected.id;
-    setCategoriesList(categoriesList.filter(item => item.id !== id));
+    const { id } = categorySelected;
+    setCategoriesList(categoriesList.filter((item) => item.id !== id));
     setDeleteModalVisible(false);
     setItemSelected({});
-  }
+  };
 
-  const handleDeleteModal = id => {
-    if (excercisesList.some(item => item.categoryId === id)) {
-      Alert.alert('La categoria contiene ejercicios, debe eliminarlos primero.')
+  const handleDeleteModal = (id) => {
+    if (excercisesList.some((item) => item.categoryId === id)) {
+      Alert.alert('La categoria contiene ejercicios, debe eliminarlos primero.');
     } else {
-      setItemSelected(categoriesList.find(item => item.id === id));
+      setItemSelected(categoriesList.find((item) => item.id === id));
       setDeleteModalVisible(true);
     }
-  }
+  };
 
-  const handleViewModal = id => {
-    setItemSelected(categoriesList.find(item => item.id === id));
+  const handleViewModal = (id) => {
+    setItemSelected(categoriesList.find((item) => item.id === id));
     setViewModalVisible(true);
-  }
+  };
 
   const handleCloseViewModal = () => {
     setViewModalVisible(false);
     setItemSelected(false);
-  }
+  };
   return (
     <View style={styles.screen}>
       <FlatList
         data={categoriesList}
-        renderItem={data => {
-          return (
-            <View style={[styles.item, styles.shadow]} >
-              <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
-                <View>
-                  <Text>{data.item.name} {data.item.lastName}</Text>
-                </View>
-              </TouchableOpacity>
-              <Button
-                title="X"
-                color="#AAAAAA"
-                onPress={() => handleDeleteModal(data.item.id)}
-              />
-            </View>
-          );
-        }}
-        keyExtractor={item => item.id}
+        renderItem={(data) => (
+          <View style={[styles.item, styles.shadow]}>
+            <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+              <View>
+                <Text>
+                  {data.item.name}
+                  {' '}
+                  {data.item.lastName}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <Button
+              title="X"
+              color="#AAAAAA"
+              onPress={() => handleDeleteModal(data.item.id)}
+            />
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
       />
       <DeleteModal
         modalVisible={deleteModalVisible}
@@ -103,9 +104,9 @@ const UserScreen = (props) => {
         handleConfirm={handleConfirmDelete}
         handleCancel={() => setDeleteModalVisible(false)}
         handleClose={() => setDeleteModalVisible(false)}
-        title={'Eliminar categoria'}
-        textOk={'Si'}
-        textCancel={'No'}
+        title="Eliminar categoria"
+        textOk="Si"
+        textCancel="No"
       >
         <View style={{ margin: 30 }}>
           <Text style={styles.modalMessage}>¿Está seguro que desea eliminar la categoria?</Text>
@@ -118,21 +119,21 @@ const UserScreen = (props) => {
         handleConfirm={handleAddItem}
         handleCancel={() => setAddModalVisible(false)}
         handleClose={() => setAddModalVisible(false)}
-        title={'Agregar categoria'}
-        textOk={'Si'}
-        textCancel={'No'}
+        title="Agregar categoria"
+        textOk="Si"
+        textCancel="No"
       >
         <View style={{ margin: 30 }}>
 
           <View style={styles.inputContainer}>
             <Input
-              autoCapitalize={'words'}
+              autoCapitalize="words"
               placeholder="Nombre"
               style={styles.input}
               onChangeText={handleChangeName}
               value={inputName}
               autoCorrect={false}
-              autoFocus={true}
+              autoFocus
             />
           </View>
 
@@ -144,8 +145,8 @@ const UserScreen = (props) => {
         categorySelected={categorySelected}
         handleConfirm={handleCloseViewModal}
         handleClose={handleCloseViewModal}
-        title={'Ver categoria'}
-        textOk={'Cerrar'}
+        title="Ver categoria"
+        textOk="Cerrar"
       >
         <View style={{ margin: 30 }}>
           <View style={styles.viewContainer}>
@@ -163,9 +164,9 @@ const UserScreen = (props) => {
         </View>
       </ViewModal>
       <AddButton handleOnPress={() => setAddModalVisible(true)} />
-    </View >
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -206,25 +207,25 @@ const styles = StyleSheet.create({
   viewRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   viewItemContainer: {
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   viewItem: {
     fontWeight: 'bold',
-    fontFamily: 'nunito-bold'
+    fontFamily: 'nunito-bold',
   },
   viewDivider: {
-    width: "100%",
+    width: '100%',
     height: 1,
-    backgroundColor: "lightgray",
-    marginVertical: 10
+    backgroundColor: 'lightgray',
+    marginVertical: 10,
   },
   modalCategory: {
     marginTop: 20,
     fontWeight: 'bold',
-    fontFamily: 'nunito-bold'
+    fontFamily: 'nunito-bold',
   },
   container: {
     flex: 1,

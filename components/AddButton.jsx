@@ -1,17 +1,19 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import React from 'react'
+import React from 'react';
 
 const AddButton = (props) => {
   const { handleOnPress } = props;
-  return <TouchableOpacity
-    style={styles.buttonContainer}
-    onPress={handleOnPress}
-  >
-    <Icon name='plus' size={30} color='purple' />
-  </TouchableOpacity>
-}
+  return (
+    <TouchableOpacity
+      style={styles.buttonContainer}
+      onPress={handleOnPress}
+    >
+      <Icon name="plus" size={30} color="purple" />
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#fff',
     borderRadius: 100,
-  }
+  },
 });
 
 export default AddButton;
