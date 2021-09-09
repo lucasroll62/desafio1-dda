@@ -1,15 +1,14 @@
 import {
   Button,
   FlatList,
-  Keyboard,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, { useState } from 'react';
+import { addUser, removeUser, selectUser } from '../store/actions/user.actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
@@ -17,15 +16,16 @@ import DeleteModal from '../components/CustomModal';
 import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
-const UserScreen = (props) => {
-  const { itemList, setItemList } = props;
+export default function UserScreen() {
+  const dispatch = useDispatch();
+  const usersList = useSelector((state) => state.users.list);
+  const selectedUser = useSelector((state) => state.users.selected);
 
   const [inputName, setInputName] = useState('');
   const [inputLastName, setInputLastName] = useState('');
   const [inputAge, setInputAge] = useState('');
   const [inputError, setInputError] = useState('');
 
-  const [itemSelected, setItemSelected] = useState({});
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
@@ -58,15 +58,13 @@ const UserScreen = (props) => {
       setInputError('Debe completar la edad');
       return;
     }
-    setItemList([
-      ...itemList,
-      {
-        id: Math.random().toString(),
-        name: inputName,
-        lastName: inputLastName,
-        age: inputAge,
-      },
-    ]);
+    dispatch(addUser({
+      id: Math.random().toString(),
+      name: inputName,
+      lastName: inputLastName,
+      age: inputAge,
+    }));
+
     setInputName('');
     setInputLastName('');
     setInputAge('');
@@ -75,30 +73,30 @@ const UserScreen = (props) => {
   };
 
   const handleConfirmDelete = () => {
-    const { id } = itemSelected;
-    setItemList(itemList.filter((item) => item.id !== id));
+    const { id } = selectedUser;
+    dispatch(removeUser(id));
     setDeleteModalVisible(false);
-    setItemSelected({});
+    dispatch(selectUser({}));
   };
 
   const handleDeleteModal = (id) => {
-    setItemSelected(itemList.find((item) => item.id === id));
+    dispatch(selectUser(usersList.find((item) => item.id === id)));
     setDeleteModalVisible(true);
   };
 
   const handleViewModal = (id) => {
-    setItemSelected(itemList.find((item) => item.id === id));
+    dispatch(selectUser(usersList.find((item) => item.id === id)));
     setViewModalVisible(true);
   };
 
   const handleCloseViewModal = () => {
     setViewModalVisible(false);
-    setItemSelected(false);
+    dispatch(selectUser({}));
   };
   return (
     <View style={styles.screen}>
       <FlatList
-        data={itemList}
+        data={usersList}
         renderItem={(data) => (
           <View style={[styles.item, styles.shadow]}>
             <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
@@ -121,7 +119,7 @@ const UserScreen = (props) => {
       />
       <DeleteModal
         modalVisible={deleteModalVisible}
-        itemSelected={itemSelected}
+        selectedUser={selectedUser}
         handleConfirm={handleConfirmDelete}
         handleCancel={() => setDeleteModalVisible(false)}
         handleClose={() => setDeleteModalVisible(false)}
@@ -132,15 +130,15 @@ const UserScreen = (props) => {
         <View style={{ margin: 30 }}>
           <Text style={styles.modalMessage}>¿Está seguro que desea eliminar al usuario?</Text>
           <Text style={styles.modalUser}>
-            {itemSelected.name}
+            {selectedUser.name}
             {' '}
-            {itemSelected.lastName}
+            {selectedUser.lastName}
           </Text>
         </View>
       </DeleteModal>
       <AddModal
         modalVisible={addModalVisible}
-        itemSelected={itemSelected}
+        selectedUser={selectedUser}
         handleConfirm={handleAddItem}
         handleCancel={() => setAddModalVisible(false)}
         handleClose={() => setAddModalVisible(false)}
@@ -159,6 +157,7 @@ const UserScreen = (props) => {
               value={inputName}
               autoCorrect={false}
               autoFocus
+              placeholderTextColor="gray"
             />
             <Input
               autoCapitalize="words"
@@ -167,6 +166,7 @@ const UserScreen = (props) => {
               onChangeText={handleChangeLastName}
               value={inputLastName}
               autoCorrect={false}
+              placeholderTextColor="gray"
             />
             <Input
               placeholder="Edad"
@@ -175,6 +175,7 @@ const UserScreen = (props) => {
               keyboardType="numeric"
               value={inputAge}
               maxLength={2}
+              placeholderTextColor="gray"
             />
           </View>
 
@@ -183,7 +184,7 @@ const UserScreen = (props) => {
       </AddModal>
       <ViewModal
         modalVisible={viewModalVisible}
-        itemSelected={itemSelected}
+        selectedUser={selectedUser}
         handleConfirm={handleCloseViewModal}
         handleClose={handleCloseViewModal}
         title="Ver usuario"
@@ -197,7 +198,7 @@ const UserScreen = (props) => {
               </View>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewItem}>
-                  {itemSelected.name}
+                  {selectedUser.name}
                 </Text>
               </View>
             </View>
@@ -208,7 +209,7 @@ const UserScreen = (props) => {
               </View>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewItem}>
-                  {itemSelected.lastName}
+                  {selectedUser.lastName}
                 </Text>
               </View>
             </View>
@@ -219,7 +220,7 @@ const UserScreen = (props) => {
               </View>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewItem}>
-                  {itemSelected.age}
+                  {selectedUser.age}
                 </Text>
               </View>
             </View>
@@ -229,7 +230,7 @@ const UserScreen = (props) => {
       <AddButton handleOnPress={() => setAddModalVisible(true)} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screen: {
@@ -294,5 +295,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export default UserScreen;

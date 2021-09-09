@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
+import { addCategory, removeCategory, selectCategory } from '../store/actions/category.actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
@@ -15,13 +17,15 @@ import DeleteModal from '../components/CustomModal';
 import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
-const UserScreen = (props) => {
-  const { categoriesList, setCategoriesList, excercisesList } = props;
+export default function CategoriesScreen() {
+  const dispatch = useDispatch();
+  const categoriesList = useSelector((state) => state.categories.list);
+  const excercisesList = useSelector((state) => state.excercises.list);
+  const categorySelected = useSelector((state) => state.categories.selected);
 
   const [inputName, setInputName] = useState('');
   const [inputError, setInputError] = useState('');
 
-  const [categorySelected, setItemSelected] = useState({});
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
@@ -37,13 +41,10 @@ const UserScreen = (props) => {
       return;
     }
 
-    setCategoriesList([
-      ...categoriesList,
-      {
-        id: Math.random().toString(),
-        name: inputName,
-      },
-    ]);
+    dispatch(addCategory({
+      id: Math.random().toString(),
+      name: inputName,
+    }));
     setInputName('');
     setInputError('');
     setAddModalVisible(false);
@@ -51,28 +52,28 @@ const UserScreen = (props) => {
 
   const handleConfirmDelete = () => {
     const { id } = categorySelected;
-    setCategoriesList(categoriesList.filter((item) => item.id !== id));
+    dispatch(removeCategory(id));
     setDeleteModalVisible(false);
-    setItemSelected({});
+    dispatch(selectCategory({}));
   };
 
   const handleDeleteModal = (id) => {
     if (excercisesList.some((item) => item.categoryId === id)) {
       Alert.alert('La categoria contiene ejercicios, debe eliminarlos primero.');
     } else {
-      setItemSelected(categoriesList.find((item) => item.id === id));
+      dispatch(selectCategory(categoriesList.find((item) => item.id === id)));
       setDeleteModalVisible(true);
     }
   };
 
   const handleViewModal = (id) => {
-    setItemSelected(categoriesList.find((item) => item.id === id));
+    dispatch(selectCategory(categoriesList.find((item) => item.id === id)));
     setViewModalVisible(true);
   };
 
   const handleCloseViewModal = () => {
     setViewModalVisible(false);
-    setItemSelected(false);
+    dispatch(selectCategory({}));
   };
   return (
     <View style={styles.screen}>
@@ -134,6 +135,7 @@ const UserScreen = (props) => {
               value={inputName}
               autoCorrect={false}
               autoFocus
+              placeholderTextColor="gray"
             />
           </View>
 
@@ -166,7 +168,7 @@ const UserScreen = (props) => {
       <AddButton handleOnPress={() => setAddModalVisible(true)} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screen: {
@@ -231,5 +233,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export default UserScreen;

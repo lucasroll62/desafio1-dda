@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { addExcercise, removeExcercise, selectExcercise } from '../store/actions/excercise.actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
@@ -14,15 +16,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
-const ExcercisesScreen = (props) => {
-  const {
-    excercisesList, setExcercisesList, categoriesList, setCategoriesList,
-  } = props;
+export default function ExcercisesScreen() {
+  const dispatch = useDispatch();
+  const categoriesList = useSelector((state) => state.categories.list);
+  const excercisesList = useSelector((state) => state.excercises.list);
+  const selectedExcercise = useSelector((state) => state.excercises.selected);
 
   const [inputName, setInputName] = useState('');
   const [inputError, setInputError] = useState('');
 
-  const [categorySelected, setItemSelected] = useState({});
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
@@ -48,39 +50,37 @@ const ExcercisesScreen = (props) => {
       return;
     }
 
-    setExcercisesList([
-      ...excercisesList,
-      {
-        id: Math.random().toString(),
-        name: inputName,
-        categoryId: selectedCategoryId,
-      },
-    ]);
+    dispatch(addExcercise({
+      id: Math.random().toString(),
+      name: inputName,
+      categoryId: selectedCategoryId,
+    }));
+
     setInputName('');
     setInputError('');
     setAddModalVisible(false);
   };
 
   const handleConfirmDelete = () => {
-    const { id } = categorySelected;
-    setExcercisesList(excercisesList.filter((item) => item.id !== id));
+    const { id } = selectedExcercise;
+    dispatch(removeExcercise(id));
     setDeleteModalVisible(false);
-    setItemSelected({});
+    dispatch(selectExcercise({}));
   };
 
   const handleDeleteModal = (id) => {
-    setItemSelected(excercisesList.find((item) => item.id === id));
+    dispatch(selectExcercise(excercisesList.find((item) => item.id === id)));
     setDeleteModalVisible(true);
   };
 
   const handleViewModal = (id) => {
-    setItemSelected(excercisesList.find((item) => item.id === id));
+    dispatch(selectExcercise(excercisesList.find((item) => item.id === id)));
     setViewModalVisible(true);
   };
 
   const handleCloseViewModal = () => {
     setViewModalVisible(false);
-    setItemSelected(false);
+    dispatch(selectExcercise({}));
   };
 
   const handleAddNewExcercise = (categoryId) => {
@@ -126,7 +126,7 @@ const ExcercisesScreen = (props) => {
       />
       <DeleteModal
         modalVisible={deleteModalVisible}
-        categorySelected={categorySelected}
+        categorySelected={selectedExcercise}
         handleConfirm={handleConfirmDelete}
         handleCancel={() => setDeleteModalVisible(false)}
         handleClose={() => setDeleteModalVisible(false)}
@@ -136,12 +136,12 @@ const ExcercisesScreen = (props) => {
       >
         <View style={{ margin: 30 }}>
           <Text style={styles.modalMessage}>¿Está seguro que desea eliminar el ejercicio?</Text>
-          <Text style={styles.modalCategory}>{categorySelected.name}</Text>
+          <Text style={styles.modalCategory}>{selectedExcercise.name}</Text>
         </View>
       </DeleteModal>
       <AddModal
         modalVisible={addModalVisible}
-        categorySelected={categorySelected}
+        categorySelected={selectedExcercise}
         handleConfirm={handleAddItem}
         handleCancel={() => setAddModalVisible(false)}
         handleClose={() => setAddModalVisible(false)}
@@ -160,6 +160,7 @@ const ExcercisesScreen = (props) => {
               value={inputName}
               autoCorrect={false}
               autoFocus
+              placeholderTextColor="gray"
             />
           </View>
 
@@ -168,7 +169,7 @@ const ExcercisesScreen = (props) => {
       </AddModal>
       <ViewModal
         modalVisible={viewModalVisible}
-        categorySelected={categorySelected}
+        categorySelected={selectedExcercise}
         handleConfirm={handleCloseViewModal}
         handleClose={handleCloseViewModal}
         title="Ver ejercicio"
@@ -182,7 +183,7 @@ const ExcercisesScreen = (props) => {
               </View>
               <View style={styles.viewItemContainer}>
                 <Text style={styles.viewItem}>
-                  {categorySelected.name}
+                  {selectedExcercise.name}
                 </Text>
               </View>
             </View>
@@ -191,7 +192,7 @@ const ExcercisesScreen = (props) => {
       </ViewModal>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screen: {
@@ -272,5 +273,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default ExcercisesScreen;

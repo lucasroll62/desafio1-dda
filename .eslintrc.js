@@ -23,7 +23,6 @@ module.exports = {
     'react/prop-types': 'off',
     'no-use-before-define': 'off',
     'import/no-duplicates': 'off',
-    'react/jsx-props-no-spreading': 'off',
     'react/jsx-filename-extension': 'off',
   },
 };

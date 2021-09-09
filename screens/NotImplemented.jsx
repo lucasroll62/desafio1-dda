@@ -2,11 +2,13 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import React from 'react';
 
-const NotImplemented = () => (
-  <View style={styles.screen}>
-    <Text>Sin implementar</Text>
-  </View>
-);
+export default function NotImplemented() {
+  return (
+    <View style={styles.screen}>
+      <Text>Sin implementar</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -18,5 +20,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export default NotImplemented;
