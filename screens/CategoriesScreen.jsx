@@ -4,12 +4,13 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, { useState } from 'react';
 import { addCategory, removeCategory, selectCategory } from '../store/actions/category.actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 
 import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
@@ -17,7 +18,7 @@ import DeleteModal from '../components/CustomModal';
 import Input from '../components/Input';
 import ViewModal from '../components/CustomModal';
 
-export default function CategoriesScreen() {
+function CategoriesScreen() {
   const dispatch = useDispatch();
   const categoriesList = useSelector((state) => state.categories.list);
   const excercisesList = useSelector((state) => state.excercises.list);
@@ -127,7 +128,7 @@ export default function CategoriesScreen() {
         <View style={{ margin: 30 }}>
 
           <View style={styles.inputContainer}>
-            <Input
+            <TextInput
               autoCapitalize="words"
               placeholder="Nombre"
               style={styles.input}
@@ -233,3 +234,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default connect()(CategoriesScreen);

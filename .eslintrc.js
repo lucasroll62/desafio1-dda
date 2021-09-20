@@ -24,5 +24,8 @@ module.exports = {
     'no-use-before-define': 'off',
     'import/no-duplicates': 'off',
     'react/jsx-filename-extension': 'off',
+    'react/jsx-props-no-spreading': ['error', {
+      custom: 'ignore',
+    }],
   },
 };

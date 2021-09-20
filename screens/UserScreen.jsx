@@ -3,6 +3,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -149,7 +150,7 @@ export default function UserScreen() {
         <View style={{ margin: 30 }}>
 
           <View style={styles.inputContainer}>
-            <Input
+            <TextInput
               autoCapitalize="words"
               placeholder="Nombre"
               style={styles.input}
@@ -159,7 +160,7 @@ export default function UserScreen() {
               autoFocus
               placeholderTextColor="gray"
             />
-            <Input
+            <TextInput
               autoCapitalize="words"
               placeholder="Apellido"
               style={styles.input}
@@ -168,7 +169,7 @@ export default function UserScreen() {
               autoCorrect={false}
               placeholderTextColor="gray"
             />
-            <Input
+            <TextInput
               placeholder="Edad"
               style={styles.input}
               onChangeText={handleChangeAge}

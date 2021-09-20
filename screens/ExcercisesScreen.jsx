@@ -3,6 +3,7 @@ import {
   SectionList,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -152,7 +153,7 @@ export default function ExcercisesScreen() {
         <View style={{ margin: 30 }}>
 
           <View style={styles.inputContainer}>
-            <Input
+            <TextInput
               autoCapitalize="words"
               placeholder="Nombre"
               style={styles.input}
