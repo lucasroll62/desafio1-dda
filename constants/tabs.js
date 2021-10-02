@@ -21,7 +21,7 @@ export default [
   },
   {
     id: 'myroutine',
-    title: 'Mi Rutina',
+    title: 'Mis Rutinas',
     icon: 'file-text-o',
   },
   {

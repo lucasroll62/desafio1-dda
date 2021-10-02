@@ -8,21 +8,31 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
-import { addCategory, removeCategory, selectCategory } from '../store/actions/category.actions';
+import React, { useEffect, useState } from 'react';
+import {
+  addCategory,
+  clearErrorMessage,
+  getCategories,
+  removeCategory,
+  selectCategory,
+} from '../store/actions/category.actions';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
 import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
-import Input from '../components/Input';
+import Spinner from '../components/Spinner';
 import ViewModal from '../components/CustomModal';
+import { useIsFocused } from '@react-navigation/core';
+import { v4 as uuidv4 } from 'uuid';
 
 function CategoriesScreen() {
   const dispatch = useDispatch();
   const categoriesList = useSelector((state) => state.categories.list);
+  const isLoading = useSelector((state) => state.categories.isLoading);
   const excercisesList = useSelector((state) => state.excercises.list);
   const categorySelected = useSelector((state) => state.categories.selected);
+  const errorMessage = useSelector((state) => state.categories.errorMessage);
 
   const [inputName, setInputName] = useState('');
   const [inputError, setInputError] = useState('');
@@ -30,6 +40,11 @@ function CategoriesScreen() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) dispatch(getCategories());
+  }, [isFocused]);
 
   const handleChangeName = (text) => {
     setInputName(text);
@@ -43,7 +58,7 @@ function CategoriesScreen() {
     }
 
     dispatch(addCategory({
-      id: Math.random().toString(),
+      id: uuidv4(),
       name: inputName,
     }));
     setInputName('');
@@ -66,6 +81,18 @@ function CategoriesScreen() {
       setDeleteModalVisible(true);
     }
   };
+
+  useEffect(() => {
+    if (errorMessage && errorMessage.length > 0) {
+      setTimeout(() => {
+        Alert.alert(
+          'Error',
+          errorMessage,
+          [{ text: 'OK', onPress: () => dispatch(clearErrorMessage()) }],
+        );
+      }, 400);
+    }
+  }, [errorMessage]);
 
   const handleViewModal = (id) => {
     dispatch(selectCategory(categoriesList.find((item) => item.id === id)));
@@ -167,6 +194,7 @@ function CategoriesScreen() {
         </View>
       </ViewModal>
       <AddButton handleOnPress={() => setAddModalVisible(true)} />
+      {isLoading && <Spinner />}
     </View>
   );
 }

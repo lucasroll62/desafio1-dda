@@ -1,15 +1,20 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../components/CustomButton';
 import React from 'react';
 import { logout } from '../store/actions/auth.action';
-import { useDispatch } from 'react-redux';
 
 export default function MyProfileScreen() {
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   return (
     <View style={styles.screen}>
       <Button text="Log Out" onPress={() => dispatch(logout())} />
+      <Text>
+        user.mail
+        {user.email}
+      </Text>
     </View>
   );
 }

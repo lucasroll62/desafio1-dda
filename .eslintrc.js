@@ -23,6 +23,7 @@ module.exports = {
     'react/prop-types': 'off',
     'no-use-before-define': 'off',
     'import/no-duplicates': 'off',
+    'no-underscore-dangle': 'off',
     'react/jsx-filename-extension': 'off',
     'react/jsx-props-no-spreading': ['error', {
       custom: 'ignore',

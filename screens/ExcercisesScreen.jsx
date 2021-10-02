@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   SectionList,
   StyleSheet,
@@ -8,23 +9,35 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { addExcercise, removeExcercise, selectExcercise } from '../store/actions/excercise.actions';
+import {
+  addExcercise,
+  clearErrorMessage,
+  getExcercises,
+  removeExcercise,
+  selectExcercise,
+} from '../store/actions/excercise.actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Input from '../components/Input';
+import Spinner from '../components/Spinner';
 import ViewModal from '../components/CustomModal';
+import { getCategories } from '../store/actions/category.actions';
+import { useIsFocused } from '@react-navigation/native';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ExcercisesScreen() {
   const dispatch = useDispatch();
   const categoriesList = useSelector((state) => state.categories.list);
   const excercisesList = useSelector((state) => state.excercises.list);
   const selectedExcercise = useSelector((state) => state.excercises.selected);
+  const errorMessage = useSelector((state) => state.excercises.errorMessage);
+  const isLoading = useSelector((state) => state.excercises.isLoading);
 
   const [inputName, setInputName] = useState('');
   const [inputError, setInputError] = useState('');
+  const [listReady, setListReady] = useState(false);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -33,12 +46,42 @@ export default function ExcercisesScreen() {
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
 
   useEffect(() => {
-    setListData(categoriesList.map((item) => ({
+    dispatch(getExcercises());
+    dispatch(getCategories());
+  }, []);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(getExcercises());
+      dispatch(getCategories());
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    const newListData = categoriesList.map((item) => ({
       title: item.name,
       categoryId: item.id,
       data: excercisesList.filter((ex) => ex.categoryId === item.id),
-    })));
-  }, [excercisesList, categoriesList]);
+    }));
+    setListData(newListData);
+  }, [excercisesList, categoriesList, isLoading]);
+
+  useEffect(() => {
+    if (listData.length > 0) setListReady(true);
+  }, [listData]);
+
+  useEffect(() => {
+    if (errorMessage && errorMessage.length > 0) {
+      setTimeout(() => {
+        Alert.alert(
+          'Error',
+          errorMessage,
+          [{ text: 'OK', onPress: () => dispatch(clearErrorMessage()) }],
+        );
+      }, 400);
+    }
+  }, [errorMessage]);
 
   const handleChangeName = (text) => {
     setInputName(text);
@@ -52,7 +95,7 @@ export default function ExcercisesScreen() {
     }
 
     dispatch(addExcercise({
-      id: Math.random().toString(),
+      id: uuidv4(),
       name: inputName,
       categoryId: selectedCategoryId,
     }));
@@ -117,6 +160,7 @@ export default function ExcercisesScreen() {
 
   return (
     <View style={styles.screen}>
+      {listReady && listData.length > 0 && (
       <SectionList
         sections={listData}
         keyExtractor={(item, index) => item + index}
@@ -125,6 +169,7 @@ export default function ExcercisesScreen() {
           renderHeader(title, categoryId)
         )}
       />
+      )}
       <DeleteModal
         modalVisible={deleteModalVisible}
         categorySelected={selectedExcercise}
@@ -191,6 +236,7 @@ export default function ExcercisesScreen() {
           </View>
         </View>
       </ViewModal>
+      {isLoading && <Spinner />}
     </View>
   );
 }
@@ -269,6 +315,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#90e0ef',
     padding: 20,
     marginVertical: 5,
+    borderColor: 'black',
+    borderWidth: 2,
     borderRadius: 10,
     justifyContent: 'space-between',
     alignItems: 'center',

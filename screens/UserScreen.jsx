@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FlatList,
   StyleSheet,
@@ -7,20 +8,28 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
-import { addUser, removeUser, selectUser } from '../store/actions/user.actions';
+import React, { useEffect, useState } from 'react';
+import {
+  addUser,
+  clearErrorMessage,
+  getUsers,
+  removeUser,
+  selectUser,
+} from '../store/actions/user.actions';
 import { useDispatch, useSelector } from 'react-redux';
 
-import AddButton from '../components/AddButton';
 import AddModal from '../components/CustomModal';
 import DeleteModal from '../components/CustomModal';
-import Input from '../components/Input';
+import Spinner from '../components/Spinner';
 import ViewModal from '../components/CustomModal';
+import { useIsFocused } from '@react-navigation/core';
 
 export default function UserScreen() {
   const dispatch = useDispatch();
   const usersList = useSelector((state) => state.users.list);
   const selectedUser = useSelector((state) => state.users.selected);
+  const errorMessage = useSelector((state) => state.users.errorMessage);
+  const isLoading = useSelector((state) => state.users.isLoading);
 
   const [inputName, setInputName] = useState('');
   const [inputLastName, setInputLastName] = useState('');
@@ -30,6 +39,11 @@ export default function UserScreen() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) dispatch(getUsers());
+  }, [isFocused]);
 
   const handleChangeName = (text) => {
     setInputName(text);
@@ -45,6 +59,18 @@ export default function UserScreen() {
     setInputAge(text.replace(/[^0-9]/g, ''));
     setInputError('');
   };
+
+  useEffect(() => {
+    if (errorMessage && errorMessage.length > 0) {
+      setTimeout(() => {
+        Alert.alert(
+          'Error',
+          errorMessage,
+          [{ text: 'OK', onPress: () => dispatch(clearErrorMessage()) }],
+        );
+      }, 400);
+    }
+  }, [errorMessage]);
 
   const handleAddItem = () => {
     if (!inputName) {
@@ -94,6 +120,11 @@ export default function UserScreen() {
     setViewModalVisible(false);
     dispatch(selectUser({}));
   };
+
+  const displayName = (item) => (item.name && item.lastName && `${item.name} ${item.lastName}`)
+  || (item.name && !item.lastName && item.name) || (!item.name && item.lastName && item.lastName)
+  || (!item.name && !item.lastName && item.email);
+
   return (
     <View style={styles.screen}>
       <FlatList
@@ -103,9 +134,7 @@ export default function UserScreen() {
             <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
               <View>
                 <Text>
-                  {data.item.name}
-                  {' '}
-                  {data.item.lastName}
+                  {displayName(data.item)}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -225,10 +254,21 @@ export default function UserScreen() {
                 </Text>
               </View>
             </View>
+            <View style={styles.viewDivider} />
+            <View style={styles.viewRow}>
+              <View style={styles.viewItemContainer}>
+                <Text style={styles.viewType}>Email: </Text>
+              </View>
+              <View style={styles.viewItemContainer}>
+                <Text style={styles.viewItem}>
+                  {selectedUser.email}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
       </ViewModal>
-      <AddButton handleOnPress={() => setAddModalVisible(true)} />
+      {isLoading && <Spinner />}
     </View>
   );
 }

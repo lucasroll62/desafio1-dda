@@ -8,7 +8,7 @@ import {
 
 const INITIAL_STATE = {
   token: null,
-  userId: null,
+  user: null,
   message: null,
 };
 
@@ -17,14 +17,12 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
     case SIGNUP:
       return {
         ...state,
-        token: action.token,
-        userId: action.userId,
+        user: action.user,
       };
     case LOGIN:
       return {
         ...state,
-        token: action.token,
-        userId: action.userId,
+        user: action.user,
       };
     case LOGIN_FAILED:
       return {
@@ -40,7 +38,7 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
     case LOGOUT: {
       return {
         ...state,
-        userId: null,
+        user: null,
         message: null,
       };
     }

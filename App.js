@@ -2,8 +2,11 @@ import AppLoading from 'expo-app-loading';
 import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import React from 'react';
+import { init } from './db';
 import store from './store';
 import { useFonts } from 'expo-font';
+
+init();
 
 export default function App() {
   const [loaded] = useFonts({

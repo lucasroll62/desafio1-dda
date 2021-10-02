@@ -1,5 +1,6 @@
 import getAuthUrlByType from '../../constants/database';
 
+const { URL_API } = process.env;
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
@@ -39,10 +40,27 @@ export const signup = (email, password) => async (dispatch) => {
 
   const data = await response.json();
 
+  await fetch(`${URL_API}/users/${data.localId}.json?auth=${process.env.API_KEY}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      date: Date.now(),
+      email,
+      role: 'USER',
+      active: true,
+    }),
+  });
+
   dispatch({
     type: SIGNUP,
-    token: data.idToken,
-    userId: data.localId,
+    user: {
+      role: 'USER',
+      token: data.idToken,
+      userId: data.localId,
+      email,
+    },
   });
 };
 
@@ -96,9 +114,21 @@ export const login = (email, password) => async (dispatch) => {
 
   const data = await response.json();
 
+  const usersResponse = await fetch(`${URL_API}/users/${data.localId}.json?auth=${process.env.API_KEY}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const usersData = await usersResponse.json();
+
   dispatch({
     type: LOGIN,
-    token: data.idToken,
-    userId: data.localId,
+    user: {
+      token: data.idToken,
+      userId: data.localId,
+      ...usersData,
+    },
   });
 };
