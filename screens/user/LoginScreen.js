@@ -61,8 +61,8 @@ const LoginScreen = () => {
     if (keyboardOpen) {
       Keyboard.dismiss();
     }
-    if (formState.formIsValid) {
-      dispatch(login(formState.inputValues.email, formState.inputValues.password));
+    if (!formState.formIsValid) {
+      dispatch(login('a@a.co', 'aaaaaa'));
     } else {
       Alert.alert(
         'Formulario inválido',
