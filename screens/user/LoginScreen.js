@@ -61,7 +61,7 @@ const LoginScreen = () => {
     if (keyboardOpen) {
       Keyboard.dismiss();
     }
-    if (!formState.formIsValid) {
+    if (formState.formIsValid) {
       dispatch(login(formState.inputValues.email, formState.inputValues.password));
     } else {
       Alert.alert(
