@@ -33,7 +33,8 @@ const RunReducer = (state = initialState, action) => {
     case FILL_RUNS:
       return {
         ...state,
-        list: action.list,
+        list: action.list.sort((a, b) => a[0].location.coords.timestamp
+        < b[0].location.coords.timestamp),
         isLoading: false,
       };
     case RUNS_FAILED:

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import Spinner from '../../components/Spinner';
+import calcCrow from '../../utils/distance';
 import {
   clearErrorMessage,
 } from '../../store/actions/excercise.actions';
@@ -33,10 +34,6 @@ export default function RunnerList() {
       navigation.navigate('Activities');
     }
   }, [activityEnd]);
-
-  useEffect(() => {
-    console.log(JSON.stringify(runnerList));
-  }, [runnerList]);
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -61,6 +58,36 @@ export default function RunnerList() {
     navigation.navigate('RunnerMap', item);
   };
 
+  const getTimeElapsed = (item) => {
+    const keys = Object.keys(item).filter((k) => k !== 'id').filter((t) => item[t]);
+    if (item[keys.length - 1]) {
+      const diffTime = moment(item[keys.length - 1].location.timestamp)
+        .diff(item[0].location.timestamp);
+      const duration = moment.duration(diffTime);
+      const hrs = duration.hours();
+      const mins = duration.minutes();
+      const secs = duration.seconds();
+
+      return `${hrs}h ${mins}m ${secs}s`;
+    }
+    return '0h 0m 0s';
+  };
+
+  const getDistance = (item) => {
+    let distance = 0;
+    const keys = Object.keys(item).filter((k) => k !== 'id').filter((t) => item[t]);
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i + 1]) {
+        distance += calcCrow(
+          item[keys[i]].location.coords.latitude, item[keys[i]].location.coords.longitude,
+          item[keys[i + 1]].location.coords.latitude, item[keys[i + 1]].location.coords.longitude,
+        );
+      }
+    }
+
+    return distance.toFixed(2);
+  };
+
   return (
     <View style={styles.screen}>
       <Button
@@ -71,14 +98,19 @@ export default function RunnerList() {
       />
       {runnerList && (
       <FlatList
-        data={runnerList.sort((a, b) => a[0].location.coords.timestamp
-          < b[0].location.coords.timestamp)}
+        data={runnerList}
         renderItem={(data) => (
           <View style={[styles.item, styles.shadow]}>
             <TouchableOpacity onPress={() => viewMap(data.item)}>
               <View>
                 <Text>
                   {moment(data.item[0].location.timestamp).format('DD/MM/YYYY HH:mm:ss')}
+                  {' '}
+                  {getTimeElapsed(data.item)}
+                  {' '}
+                  {getDistance(data.item)}
+                  {' '}
+                  Km
                 </Text>
               </View>
             </TouchableOpacity>

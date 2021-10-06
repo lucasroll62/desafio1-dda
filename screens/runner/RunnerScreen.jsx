@@ -11,23 +11,20 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import Spinner from '../../components/Spinner';
 import calcCrow from '../../utils/distance';
 import {
   clearErrorMessage,
 } from '../../store/actions/excercise.actions';
 import colors from '../../constants/colors';
 import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function RunnerScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const errorMessage = useSelector((state) => state.routines.errorMessage);
-  const isLoading = useSelector((state) => state.routines.isLoading);
-  const activityEnd = useSelector((state) => state.routines.activityEnd);
 
   const [currentRunId, setCurrentRunId] = useState(false);
   const [currentCoord, setCurrentCoord] = useState(null);
@@ -37,21 +34,31 @@ export default function RunnerScreen() {
 
   const navigation = useNavigation();
 
+  const isFocused = useIsFocused();
   useEffect(() => {
-    if (activityEnd) {
-      navigation.navigate('Activities');
+    if (isFocused) {
+      setDistance(0);
     }
-  }, [activityEnd]);
+  }, [isFocused]);
 
   useEffect(() => {
     if (currentCoord) {
       const { prevLocation, newLocation } = currentCoord;
-      if (prevLocation) {
-        setDistance(distance + calcCrow(prevLocation.coords.latitude, prevLocation.coords.longitude,
-          newLocation.coords.latitude, newLocation.coords.longitude));
-      }
+      setDistance(prevLocation ? distance + calcCrow(prevLocation.coords.latitude,
+        prevLocation.coords.longitude,
+        newLocation.coords.latitude, newLocation.coords.longitude) : 0);
+    } else {
+      setDistance(0);
     }
   }, [currentCoord]);
+
+  useEffect(() => {
+    if (!start) {
+      setCurrentCoord(null);
+      setDistance(0);
+      setStartTime(null);
+    }
+  }, [start]);
 
   const verifyPermissions = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -64,11 +71,11 @@ export default function RunnerScreen() {
 
       return false;
     }
-
     return true;
   };
 
   const startRun = async () => {
+    setDistance(0);
     const runningId = uuidv4();
     setCurrentRunId(runningId);
     const isLocationOk = await verifyPermissions();
@@ -94,11 +101,10 @@ export default function RunnerScreen() {
       currentP += 1;
     });
 
-    // 2 start the task
     Location.startLocationUpdatesAsync(runningId, {
       accuracy: Location.Accuracy.Balanced,
-      distanceInterval: 1, // minimum change (in meters) betweens updates
-      deferredUpdatesInterval: 10000, // minimum interval (in milliseconds) between updates
+      distanceInterval: 5,
+      deferredUpdatesInterval: 10000,
       foregroundService: {
         notificationTitle: 'Using your location',
         notificationBody: 'To turn off, go back to the app and switch something off.',
@@ -183,7 +189,6 @@ export default function RunnerScreen() {
         </View>
         )}
       </View>
-      {isLoading && <Spinner />}
     </View>
   );
 }

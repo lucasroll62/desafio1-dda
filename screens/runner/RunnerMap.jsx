@@ -3,6 +3,7 @@ import {
   Button,
   Image,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import React, { useEffect } from 'react';
@@ -10,10 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import Spinner from '../../components/Spinner';
+import calcCrow from '../../utils/distance';
 import {
   clearErrorMessage,
 } from '../../store/actions/excercise.actions';
 import { getRuns } from '../../store/actions/runner.actions';
+import moment from 'moment';
 
 export default function RunnerMap({ route }) {
   const dispatch = useDispatch();
@@ -42,7 +45,7 @@ export default function RunnerMap({ route }) {
   const getUrl = () => {
     const keys = Object.keys(runActivity).filter((k) => k !== 'id');
     const pathParams = keys.filter((k) => runActivity[k]).map((k) => (`${runActivity[k].location.coords.latitude},${runActivity[k].location.coords.longitude}`)).join('|');
-    return `http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=${pathParams}&sensor=false&key=${process.env.MAPS_API_KEY}`;
+    return `http://maps.googleapis.com/maps/api/staticmap?zoom=15&size=600x300&path=${pathParams}&sensor=false&key=${process.env.MAPS_API_KEY}`;
   };
 
   useEffect(() => {
@@ -57,6 +60,35 @@ export default function RunnerMap({ route }) {
     }
   }, [errorMessage]);
 
+  const getTimeElapsed = (item) => {
+    const keys = Object.keys(item).filter((k) => k !== 'id').filter((t) => item[t]);
+    if (item[keys.length - 1]) {
+      const diffTime = moment(item[keys.length - 1].location.timestamp)
+        .diff(item[0].location.timestamp);
+      const duration = moment.duration(diffTime);
+      const hrs = duration.hours();
+      const mins = duration.minutes();
+      const secs = duration.seconds();
+
+      return `${hrs}h ${mins}m ${secs}s`;
+    }
+    return '0h 0m 0s';
+  };
+
+  const getDistance = (item) => {
+    let distance = 0;
+    const keys = Object.keys(item).filter((k) => k !== 'id').filter((t) => item[t]);
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i + 1]) {
+        distance += calcCrow(
+          item[keys[i]].location.coords.latitude, item[keys[i]].location.coords.longitude,
+          item[keys[i + 1]].location.coords.latitude, item[keys[i + 1]].location.coords.longitude,
+        );
+      }
+    }
+    return distance.toFixed(2);
+  };
+
   return (
     <View style={styles.screen}>
       <Button
@@ -69,6 +101,23 @@ export default function RunnerMap({ route }) {
         <Image style={styles.mapImage} source={{ uri: getUrl() }} />
       </View>
       <View style={styles.statusContainer} />
+      <Text>
+        Inicio:
+        {' '}
+        {moment(runActivity[0].location.timestamp).format('DD/MM/YYYY HH:mm:ss')}
+      </Text>
+      <Text>
+        Distancia recorrida:
+        {' '}
+        {getDistance(runActivity)}
+        {' '}
+        Km.
+      </Text>
+      <Text>
+        Tiempo transcurrido:
+        {' '}
+        {getTimeElapsed(runActivity)}
+      </Text>
       {isLoading && <Spinner />}
     </View>
   );
