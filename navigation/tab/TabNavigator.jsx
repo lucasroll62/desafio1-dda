@@ -5,6 +5,7 @@ import MyProfileScreen from '../../screens/MyProfileScreen';
 import MyRoutinesNavigator from '../myRoutines/MyRoutinesNavigator';
 import React from 'react';
 import RoutinesNavigator from '../routines/RoutinesNavigator';
+import RunnerNavigator from '../runner/RunnerNavigator';
 import Tabs from '../../constants/tabs';
 import UserScreen from '../../screens/UserScreen';
 import colors from '../../constants/colors';
@@ -88,6 +89,14 @@ export default function AppNavigator() {
           title: Tabs[5].title,
         }}
         initialParams={{ icon: Tabs[5].icon }}
+        component={RunnerNavigator}
+      />
+      <Tab.Screen
+        name={Tabs[6].id}
+        options={{
+          title: Tabs[6].title,
+        }}
+        initialParams={{ icon: Tabs[6].icon }}
         component={MyProfileScreen}
       />
     </Tab.Navigator>

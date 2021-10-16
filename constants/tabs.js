@@ -25,6 +25,11 @@ export default [
     icon: 'file-text-o',
   },
   {
+    id: 'runner',
+    title: 'Runner',
+    icon: 'map-o',
+  },
+  {
     id: 'myprofile',
     title: 'Mi Perfil',
     icon: 'user',
