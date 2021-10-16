@@ -4,6 +4,7 @@ import {
   LOGIN_FAILED,
   LOGOUT,
   SIGNUP,
+  USER_UPDATED,
 } from '../actions/auth.action';
 
 const INITIAL_STATE = {
@@ -20,6 +21,11 @@ const AuthReducer = (state = INITIAL_STATE, action) => {
         user: action.user,
       };
     case LOGIN:
+      return {
+        ...state,
+        user: action.user,
+      };
+    case USER_UPDATED:
       return {
         ...state,
         user: action.user,

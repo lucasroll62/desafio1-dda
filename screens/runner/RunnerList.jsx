@@ -100,8 +100,8 @@ export default function RunnerList() {
       <FlatList
         data={runnerList}
         renderItem={(data) => (
-          <View style={[styles.item, styles.shadow]}>
-            <TouchableOpacity onPress={() => viewMap(data.item)}>
+          <TouchableOpacity onPress={() => viewMap(data.item)}>
+            <View style={[styles.item, styles.shadow]}>
               <View>
                 <Text>
                   {moment(data.item[0].location.timestamp).format('DD/MM/YYYY HH:mm:ss')}
@@ -113,8 +113,8 @@ export default function RunnerList() {
                   Km
                 </Text>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
       />
@@ -148,8 +148,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -220,5 +219,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     minHeight: 30,
     marginTop: 20,
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });

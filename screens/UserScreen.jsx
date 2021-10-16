@@ -130,20 +130,20 @@ export default function UserScreen() {
       <FlatList
         data={usersList}
         renderItem={(data) => (
-          <View style={[styles.item, styles.shadow]}>
-            <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+          <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+            <View style={[styles.item, styles.shadow]}>
               <View>
                 <Text>
                   {displayName(data.item)}
                 </Text>
               </View>
-            </TouchableOpacity>
-            <Button
-              title="X"
-              color="#AAAAAA"
-              onPress={() => handleDeleteModal(data.item.id)}
-            />
-          </View>
+              <Button
+                title="X"
+                color="#AAAAAA"
+                onPress={() => handleDeleteModal(data.item.id)}
+              />
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
       />
@@ -296,8 +296,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -334,5 +333,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });

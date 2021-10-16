@@ -91,8 +91,8 @@ export default function MyRoutines() {
       <FlatList
         data={routinesList}
         renderItem={(data) => (
-          <View style={[styles.item, styles.shadow]}>
-            <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+          <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+            <View style={[styles.item, styles.shadow]}>
               <View>
                 <Text>
                   {data.item.name}
@@ -100,8 +100,8 @@ export default function MyRoutines() {
                   {data.item.lastName}
                 </Text>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
       />
@@ -186,8 +186,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -240,5 +239,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });

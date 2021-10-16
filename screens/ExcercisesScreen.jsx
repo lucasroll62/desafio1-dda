@@ -144,18 +144,18 @@ export default function ExcercisesScreen() {
   );
 
   const renderItem = (item) => (
-    <View style={[styles.item, styles.shadow]}>
-      <TouchableOpacity onPress={() => handleViewModal(item.id)}>
+    <TouchableOpacity onPress={() => handleViewModal(item.id)}>
+      <View style={[styles.item, styles.shadow]}>
         <View>
           <Text>{item.name}</Text>
         </View>
-      </TouchableOpacity>
-      <Button
-        title="X"
-        color="#AAAAAA"
-        onPress={() => handleDeleteModal(item.id)}
-      />
-    </View>
+        <Button
+          title="X"
+          color="#AAAAAA"
+          onPress={() => handleDeleteModal(item.id)}
+        />
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -264,8 +264,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -320,5 +319,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });

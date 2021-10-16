@@ -6,6 +6,7 @@ export const LOGIN = 'LOGIN';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
 export const LOGOUT = 'LOGOUT';
+export const USER_UPDATED = 'USER_UPDATED';
 
 export const clearMessage = () => ({
   type: CLEAR_MESSAGE,
@@ -13,6 +14,11 @@ export const clearMessage = () => ({
 
 export const logout = () => ({
   type: LOGOUT,
+});
+
+export const updateUserData = (user) => ({
+  type: USER_UPDATED,
+  user,
 });
 
 export const signup = (email, password) => async (dispatch) => {

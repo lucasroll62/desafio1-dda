@@ -127,8 +127,8 @@ export default function BrowseRoutines() {
       <FlatList
         data={routinesList}
         renderItem={(data) => (
-          <View style={[styles.item, styles.shadow]}>
-            <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+          <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+            <View style={[styles.item, styles.shadow]}>
               <View>
                 <Text>
                   {data.item.name}
@@ -136,13 +136,13 @@ export default function BrowseRoutines() {
                   {data.item.lastName}
                 </Text>
               </View>
-            </TouchableOpacity>
-            <Button
-              title="X"
-              color="#AAAAAA"
-              onPress={() => handleDeleteModal(data.item.id)}
-            />
-          </View>
+              <Button
+                title="X"
+                color="#AAAAAA"
+                onPress={() => handleDeleteModal(data.item.id)}
+              />
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
       />
@@ -220,22 +220,22 @@ export default function BrowseRoutines() {
               <FlatList
                 data={usersList}
                 renderItem={(data) => (
-                  <View style={[styles.item, styles.shadow]}>
-                    <TouchableOpacity onPress={() => handleViewModal(data.item.id)}>
+                  <TouchableOpacity>
+                    <View style={[styles.item, styles.shadow]}>
                       <View>
                         <Text>
                           {displayName(data.item)}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                    <Switch
-                      trackColor={{ false: '#767577', true: 'green' }}
-                      thumbColor={usersSelected[data.index].checked ? 'white' : '#f4f3f4'}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={(e) => toggleSwitch(e, data.index)}
-                      value={usersSelected[data.index].checked}
-                    />
-                  </View>
+                      <Switch
+                        trackColor={{ false: '#767577', true: 'green' }}
+                        thumbColor={usersSelected[data.index].checked ? 'white' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={(e) => toggleSwitch(e, data.index)}
+                        value={usersSelected[data.index].checked}
+                      />
+                    </View>
+                  </TouchableOpacity>
                 )}
                 keyExtractor={(item) => item.id}
               />
@@ -272,8 +272,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -326,5 +325,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });

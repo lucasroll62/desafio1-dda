@@ -79,7 +79,7 @@ const CustomModal = (props) => {
 
   const modal = (
     <Modal
-      animationType="fade"
+      animationType="none"
       transparent
       visible={modalVisible}
     >
