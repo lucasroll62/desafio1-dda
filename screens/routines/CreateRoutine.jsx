@@ -217,19 +217,19 @@ export default function CreateRoutine() {
     };
 
     return (
-      <View style={[
-        styles.item, styles.shadow, isSelected() ? styles.selected : styles.unselected]}
+      <TouchableOpacity
+        onPress={
+          () => (isSelected() ? handleDeleteModal(item.id) : handleAddExcerciseModal(item.id))
+        }
       >
-        <TouchableOpacity
-          onPress={
-            () => (isSelected() ? handleDeleteModal(item.id) : handleAddExcerciseModal(item.id))
-          }
+        <View style={[
+          styles.item, styles.shadow, isSelected() ? styles.selected : styles.unselected]}
         >
           <View>
             <Text>{item.name}</Text>
           </View>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -414,8 +414,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -501,5 +500,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
 });
