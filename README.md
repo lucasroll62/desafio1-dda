@@ -6,6 +6,6 @@ React Native app for optimized list for CoderHouse
 
 Run "npm install" and "npm start" to run project on EXPO.
 
-# Wireframe
+# Wireframes
 
-Could be found in /docs
+Could be found in /docs/wireframes
