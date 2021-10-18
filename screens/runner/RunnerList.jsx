@@ -22,18 +22,11 @@ import moment from 'moment';
 export default function RunnerList() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const errorMessage = useSelector((state) => state.routines.errorMessage);
-  const isLoading = useSelector((state) => state.routines.isLoading);
-  const activityEnd = useSelector((state) => state.routines.activityEnd);
+  const errorMessage = useSelector((state) => state.runner.errorMessage);
+  const isLoading = useSelector((state) => state.runner.isLoading);
   const runnerList = useSelector((state) => state.runner.list);
 
   const navigation = useNavigation();
-
-  useEffect(() => {
-    if (activityEnd) {
-      navigation.navigate('Activities');
-    }
-  }, [activityEnd]);
 
   const isFocused = useIsFocused();
   useEffect(() => {
